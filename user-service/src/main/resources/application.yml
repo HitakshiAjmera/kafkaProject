@@ -6,3 +6,6 @@ kafka.topic:
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
