@@ -1,5 +1,6 @@
 package com.hitakshi.kafkaProject.order_service.consumer;
 
+import com.hitakshi.kafkaProject.order_service.service.OrderEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class OrderServiceConsumer {
+
+    private final OrderEventPublisher orderEventPublisher;
+
+    public OrderServiceConsumer(OrderEventPublisher orderEventPublisher) {
+        this.orderEventPublisher = orderEventPublisher;
+    }
 
     @KafkaListener(topics = {"user-created-topic", "user-random-topic"})
     public void consumeUserServiceEvents(Object event) {
@@ -27,6 +34,6 @@ public class OrderServiceConsumer {
         String payload = event instanceof String ? (String) event : event.toString();
         log.info("Processing event from {}: {}", source, payload);
 
-        // Add your order-service business logic here.
+        orderEventPublisher.publishOrderProcessed(source, payload);
     }
 }
